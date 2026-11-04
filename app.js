@@ -1,0 +1,22 @@
+const grid=document.getElementById('gift-grid');
+const punk=gifts.find(g=>g.title==='Панк-Паук');
+const noir=gifts.find(g=>g.title==='Spider-Noir');
+const glasses=gifts.find(g=>g.title==='Очки для компьютера');
+if(punk)punk.links=punk.links.filter(link=>link.url.includes('share.temu.com'));
+if(noir)noir.links=[{label:'Посмотреть на Kaspi',url:'https://l.kaspi.kz/shop/4fsBGxEKLUMXZj6?sessionId=942810d2-ecd4-4da0-a619-a59b92626f0c1793788630'}];
+if(glasses)glasses.links=[];
+gifts.splice(6,0,{title:'Наушники-капельки Redmi',category:'tech',links:[],image:'redmi-earbuds.png',subtitle:'Как у Вики',score:7.5,price:'хз, не помню',priceNote:'Вика знает, где брать',note:'Хочу такие же удобные наушники-капельки, как у Вики. Без ссылки — она сама знает, где их купить.',label:'Как у Вики',id:9});
+document.querySelector('.ribbon')?.remove();
+const score=g=>String(g.score).replace('.',',');
+const escapeText=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+grid.innerHTML=gifts.map((g,i)=>`<article class="gift ${i===0?'featured':''}" data-id="${i}" data-category="${g.category}"><button class="gift-art ${g.category==='games'?'game':''}" data-open="${i}" aria-label="Подробнее: ${escapeText(g.title)}"><span class="gift-tag">${g.label}</span><img src="assets/new/${g.image}" alt="${escapeText(g.title)}" loading="${i===0?'eager':'lazy'}"></button><div class="gift-body"><div class="gift-kicker"><span class="gift-num">№ ${String(i+1).padStart(2,'0')}</span><span class="score">хочу <strong>${score(g)}</strong><small> / 10</small></span></div><h3 class="gift-title">${g.title}</h3><p class="subtitle">${g.subtitle}</p>${i===0?`<p class="featured-note">${g.note}</p>`:''}<div class="gift-bottom"><span class="price">${g.price}</span><button class="details-link" data-open="${i}" aria-label="Детали и ссылки: ${escapeText(g.title)}">Детали и ссылки ↗</button></div>${i===0?`<div class="price-origin">${g.priceNote}</div>`:''}</div></article>`).join('');
+[...grid.querySelectorAll('.gift')].forEach((card,index)=>{if(!gifts[index].links.length){card.querySelector('.details-link')?.remove();const art=card.querySelector('.gift-art');if(art){art.removeAttribute('data-open');art.removeAttribute('aria-label');art.disabled=true}}});
+const giftDialog=document.getElementById('gift-dialog');
+const letterDialog=document.getElementById('letter-dialog');
+function showDialog(dialog){dialog.showModal();document.body.classList.add('modal-open')}
+function showGift(id){const g=gifts[id];document.getElementById('detail-content').innerHTML=`<div class="detail-layout"><div class="detail-art ${g.category==='games'?'game':''}"><img src="assets/new/${g.category==='games'?g.image.replace('.jpg','-poster.jpg'):g.image}" alt="${escapeText(g.title)}"></div><div class="detail-copy"><div class="eyebrow">${g.label} · ХОЧУ ${score(g)} / 10</div><h2>${g.title}</h2><p class="subtitle">${g.subtitle}</p><div class="price">${g.price}</div><div class="price-origin">${g.priceNote}</div><p class="detail-note">${g.note}</p>${g.extra?`<p class="detail-extra">${g.extra}</p>`:''}<div class="detail-links">${g.links.map(l=>`<a href="${escapeText(l.url)}" target="_blank" rel="noopener noreferrer">${escapeText(l.label)}<span>↗</span></a>`).join('')}</div></div></div>`;showDialog(giftDialog)}
+grid.addEventListener('click',event=>{const b=event.target.closest('[data-open]');if(b)showGift(Number(b.dataset.open))});
+document.getElementById('open-letter').addEventListener('click',()=>showDialog(letterDialog));
+[giftDialog,letterDialog].forEach(dialog=>{dialog.querySelector('.close').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close()}});dialog.addEventListener('close',()=>document.body.classList.remove('modal-open'))});
+const filters=[...document.querySelectorAll('.filter')];
+filters.forEach(button=>button.addEventListener('click',()=>{filters.forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});let count=0;document.querySelectorAll('.gift').forEach(card=>{card.hidden=button.dataset.filter!=='all'&&button.dataset.filter!==card.dataset.category;if(!card.hidden)count++});document.getElementById('result-count').textContent=count===gifts.length?`Все ${gifts.length} хотелок — здесь.`:`В этой категории: ${count} из ${gifts.length}.`}));
