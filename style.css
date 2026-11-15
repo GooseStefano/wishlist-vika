@@ -8,3 +8,19 @@
 .hero{overflow:clip}.gift-art.game img{object-fit:contain}.detail-art.game img{object-fit:contain}
 .gift-art:disabled:after{display:none}
 @media(min-width:761px) and (max-width:900px){.hero h1{font-size:73px}.collage{transform:scale(.72);margin-left:-90px}.gift-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.end-postscript{display:none}}
+/* Phone cards: a single, readable column keeps the title, priority and price from competing for space. */
+@media(max-width:760px){
+  .gift-grid{grid-template-columns:minmax(0,1fr);gap:30px}
+  .gift-art{height:220px;padding:20px}
+  .featured .gift-art{height:235px;padding:28px 30px 12px}
+  .gift-kicker{gap:12px}
+  .gift-title{max-width:100%;overflow-wrap:anywhere}
+  .subtitle{min-height:0;margin-bottom:14px}
+  .gift-bottom{gap:4px}
+  .details-link{min-height:44px;padding:11px 0;align-self:flex-start}
+}
+@media(max-width:420px){
+  .gift-grid{gap:28px}
+  .gift-art{height:205px}
+  .featured .gift-art{height:220px}
+}
