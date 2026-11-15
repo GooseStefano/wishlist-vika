@@ -12,7 +12,8 @@
 @media(max-width:760px){
   .gift-grid{grid-template-columns:minmax(0,1fr);gap:30px}
   .gift-art{height:220px;padding:20px}
-  .featured .gift-art{height:235px;padding:28px 30px 12px}
+  .featured .gift-art{height:235px;padding:58px 30px 12px}
+  .featured .gift-tag{left:20px;top:10px}
   .gift-kicker{gap:12px}
   .gift-title{max-width:100%;overflow-wrap:anywhere}
   .subtitle{min-height:0;margin-bottom:14px}
