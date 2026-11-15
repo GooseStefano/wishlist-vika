@@ -9,8 +9,29 @@ gifts.splice(6,0,{title:'Наушники-капельки Redmi',category:'tech
 document.querySelector('.ribbon')?.remove();
 const score=g=>String(g.score).replace('.',',');
 const escapeText=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-grid.innerHTML=gifts.map((g,i)=>`<article class="gift ${i===0?'featured':''}" data-id="${i}" data-category="${g.category}"><button class="gift-art ${g.category==='games'?'game':''}" data-open="${i}" aria-label="Подробнее: ${escapeText(g.title)}"><span class="gift-tag">${g.label}</span><img src="assets/new/${g.image}" alt="${escapeText(g.title)}" loading="${i===0?'eager':'lazy'}"></button><div class="gift-body"><div class="gift-kicker"><span class="gift-num">№ ${String(i+1).padStart(2,'0')}</span><span class="score">хочу <strong>${score(g)}</strong><small> / 10</small></span></div><h3 class="gift-title">${g.title}</h3><p class="subtitle">${g.subtitle}</p>${i===0?`<p class="featured-note">${g.note}</p>`:''}<div class="gift-bottom"><span class="price">${g.price}</span><button class="details-link" data-open="${i}" aria-label="Детали и ссылки: ${escapeText(g.title)}">Детали и ссылки ↗</button></div>${i===0?`<div class="price-origin">${g.priceNote}</div>`:''}</div></article>`).join('');
-[...grid.querySelectorAll('.gift')].forEach((card,index)=>{if(!gifts[index].links.length){card.querySelector('.details-link')?.remove();const art=card.querySelector('.gift-art');if(art){art.removeAttribute('data-open');art.removeAttribute('aria-label');art.disabled=true}}});
+const groupDefinitions=[
+  {key:'main',heading:'',items:['Samsung Odyssey G5']},
+  {key:'tech',heading:'Также из техники хотел бы:',items:['Наушники-капельки Redmi']},
+  {key:'games',heading:'Хотел бы поиграть в эти игры:',items:['Crimson Desert','Expedition 33']},
+  {key:'collectibles',heading:'А ещё хочу дополнить коллекцию паучков:',items:['Панк-Паук','Spider-Noir']},
+  {key:'accessories',heading:'Из полезных аксессуаров:',items:['Механические часы','Очки для компьютера']},
+  {key:'kitchen',heading:'Ну и куда же без кухонной утвари:',items:['Стальная сковорода','Разделочные доски']}
+];
+const byTitle=title=>gifts.find(g=>g.title===title);
+const sortByPriority=items=>[...items].sort((a,b)=>b.score-a.score);
+const giftCard=(g,position)=>{const index=gifts.indexOf(g);const featured=g.title==='Samsung Odyssey G5';return `<article class="gift ${featured?'featured':''}" data-id="${index}" data-category="${g.category}"><button class="gift-art ${g.category==='games'?'game':''}" data-open="${index}" aria-label="Подробнее: ${escapeText(g.title)}"><span class="gift-tag">${g.label}</span><img src="assets/new/${g.image}" alt="${escapeText(g.title)}" loading="${featured?'eager':'lazy'}"></button><div class="gift-body"><div class="gift-kicker"><span class="gift-num">№ ${String(position).padStart(2,'0')}</span><span class="score">хочу <strong>${score(g)}</strong><small> / 10</small></span></div><h3 class="gift-title">${g.title}</h3><p class="subtitle">${g.subtitle}</p>${featured?`<p class="featured-note">${g.note}</p>`:''}<div class="gift-bottom"><span class="price">${g.price}</span><button class="details-link" data-open="${index}" aria-label="Детали и ссылки: ${escapeText(g.title)}">Детали и ссылки ↗</button></div>${featured?`<div class="price-origin">${g.priceNote}</div>`:''}</div></article>`};
+function disableUnavailableCards(){[...grid.querySelectorAll('.gift')].forEach(card=>{const gift=gifts[Number(card.dataset.id)];if(!gift.links.length){card.querySelector('.details-link')?.remove();const art=card.querySelector('.gift-art');if(art){art.removeAttribute('data-open');art.removeAttribute('aria-label');art.disabled=true}}})}
+function renderGifts(filter='all'){
+  if(filter==='all'){
+    let position=0;
+    grid.innerHTML=groupDefinitions.map(group=>{const items=sortByPriority(group.items.map(byTitle));const cards=items.map(g=>giftCard(g,++position)).join('');return `<section class="gift-section gift-section-${group.key}"${group.heading?` aria-labelledby="section-${group.key}"`:''}>${group.heading?`<h3 class="gift-section-heading" id="section-${group.key}">${group.heading}</h3>`:''}${cards}</section>`}).join('');
+  }else{
+    const items=sortByPriority(gifts.filter(g=>g.category===filter));
+    grid.innerHTML=`<section class="gift-section gift-section-filter">${items.map((g,index)=>giftCard(g,index+1)).join('')}</section>`;
+  }
+  disableUnavailableCards();
+}
+renderGifts();
 const giftDialog=document.getElementById('gift-dialog');
 const letterDialog=document.getElementById('letter-dialog');
 function showDialog(dialog){dialog.showModal();document.body.classList.add('modal-open')}
@@ -19,4 +40,4 @@ grid.addEventListener('click',event=>{const b=event.target.closest('[data-open]'
 document.getElementById('open-letter').addEventListener('click',()=>showDialog(letterDialog));
 [giftDialog,letterDialog].forEach(dialog=>{dialog.querySelector('.close').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close()}});dialog.addEventListener('close',()=>document.body.classList.remove('modal-open'))});
 const filters=[...document.querySelectorAll('.filter')];
-filters.forEach(button=>button.addEventListener('click',()=>{filters.forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});let count=0;document.querySelectorAll('.gift').forEach(card=>{card.hidden=button.dataset.filter!=='all'&&button.dataset.filter!==card.dataset.category;if(!card.hidden)count++});document.getElementById('result-count').textContent=count===gifts.length?`Все ${gifts.length} хотелок — здесь.`:`В этой категории: ${count} из ${gifts.length}.`}));
+filters.forEach(button=>button.addEventListener('click',()=>{filters.forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});const filter=button.dataset.filter;renderGifts(filter);const count=filter==='all'?gifts.length:gifts.filter(g=>g.category===filter).length;document.getElementById('result-count').textContent=count===gifts.length?`Все ${gifts.length} хотелок — здесь.`:`В этой категории: ${count} из ${gifts.length}.`}));

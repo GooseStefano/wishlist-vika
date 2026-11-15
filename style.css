@@ -25,3 +25,23 @@
   .gift-art{height:205px}
   .featured .gift-art{height:220px}
 }
+/* The unfiltered wishlist is arranged as calm, priority-led gift chapters. */
+.gift-grid{display:block}
+.gift-section{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:34px 25px}
+.gift-section+.gift-section:not(.gift-section-tech){border-top:1px solid var(--rule);margin-top:52px;padding-top:29px}
+.gift-section-heading{grid-column:1/-1;font:500 28px/1.1 var(--serif);letter-spacing:-.35px;margin:0;color:var(--ink)}
+.gift-section-heading:before{content:'✳';color:var(--accent);font:17px var(--sans);margin-right:9px;vertical-align:middle}
+@media(max-width:1000px){.gift-section{gap:28px 20px}}
+@media(max-width:760px){
+  .gift-section{grid-template-columns:minmax(0,1fr);gap:30px}
+  .gift-section+.gift-section:not(.gift-section-tech){margin-top:42px;padding-top:24px}
+  .gift-section-heading{font-size:27px}
+  .collage{height:600px}
+  .envelope{bottom:120px}
+  .collage-hand{right:3px;bottom:5px}
+}
+@media(max-width:420px){
+  .collage{height:570px}
+  .envelope{bottom:110px}
+  .collage-hand{right:4px;bottom:3px}
+}
