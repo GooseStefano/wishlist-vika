@@ -37,26 +37,26 @@
   .gift-section+.gift-section:not(.gift-section-tech){margin-top:42px;padding-top:24px}
   .gift-section-heading{font-size:27px}
   .collage{height:600px}
-  .envelope{bottom:120px}
+  .envelope{bottom:140px}
   .collage-hand{right:3px;bottom:5px}
 }
 @media(max-width:420px){
   .collage{height:570px}
-  .envelope{bottom:110px}
+  .envelope{bottom:130px}
   .collage-hand{right:4px;bottom:3px}
 }
 /* Keep the two mobile polaroids and their handwritten captions in separate visual lanes. */
 @media(max-width:760px){
-  .photo-punk{width:185px;height:235px;left:8px;top:12px}
+  .photo-punk{width:185px;height:235px;left:32px;top:12px}
   .photo-punk img{height:178px}
-  .photo-watch{width:145px;height:180px;right:6px;top:92px}
+  .photo-watch{width:145px;height:180px;right:34px;top:92px}
   .photo-watch img{height:126px}
   .photo figcaption{font-size:20px}
 }
 @media(max-width:420px){
-  .photo-punk{width:166px;height:214px;left:3px;top:8px}
+  .photo-punk{width:166px;height:214px;left:28px;top:8px}
   .photo-punk img{height:158px}
-  .photo-watch{width:126px;height:160px;right:0;top:92px}
+  .photo-watch{width:126px;height:160px;right:26px;top:100px}
   .photo-watch img{height:110px}
   .photo figcaption{font-size:18px}
 }
